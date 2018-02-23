@@ -6,7 +6,7 @@
 
     <groupId>com.othebe</groupId>
     <artifactId>information-retrieval</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
 
     <properties>
         <kotlin.version>1.2.21</kotlin.version>
@@ -24,6 +24,7 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.1.0-M2</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -109,4 +110,12 @@
             </plugin>
         </plugins>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-othebe-information-retrieval</id>
+            <name>othebe-information-retrieval</name>
+            <url>https://api.bintray.com/maven/othebe/information-retrieval/information-retrieval/;publish=1</url>
+        </repository>
+    </distributionManagement>
 </project>
