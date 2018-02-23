@@ -1,7 +1,6 @@
 package core.search
 
 import core.DocId
-import javafx.util.Pair
 
 class Search(zones: Set<Zone<Any>>) {
     private val zonesByName: Map<String, Zone<Any>>
@@ -25,14 +24,14 @@ class Search(zones: Set<Zone<Any>>) {
                     if (matches == null || acc == null) {
                         emptyList()
                     } else {
-                        val constraints: Map<DocId, Double> = acc.associate { it -> it.key to it.value }
+                        val constraints: Map<DocId, Double> = acc.associate { it -> it.first to it.second }
                         matches
-                                .filter { constraints.contains(it.key) }
-                                .map { it -> Pair(it.key, it.value * (constraints[it.key] ?: 0.0)) }
+                                .filter { constraints.contains(it.first) }
+                                .map { it -> Pair(it.first, it.second * (constraints[it.first] ?: 0.0)) }
                     }
                 }
                 .orEmpty()
-                .sortedByDescending { it -> it.value }
+                .sortedByDescending { it -> it.second }
                 .take(limit)
     }
 }

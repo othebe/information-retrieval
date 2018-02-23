@@ -1,7 +1,7 @@
 package core.search;
 
 import core.DocId;
-import javafx.util.Pair;
+import kotlin.Pair;
 
 import java.util.List;
 

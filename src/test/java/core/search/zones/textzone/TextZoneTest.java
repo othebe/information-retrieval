@@ -1,14 +1,12 @@
 package core.search.zones.textzone;
 
 import core.DocId;
-import core.search.zones.textzone.StandardTextParser;
-import core.search.zones.textzone.TextZone;
 import core.search.zones.textzone.positionalindex.IPositionalIndex;
 import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
 import core.parser.Parser;
 import core.query.Query;
 import core.query.parser.StandardQueryParser;
-import javafx.util.Pair;
+import kotlin.Pair;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +44,9 @@ public class TextZoneTest {
 
         // ASSERT
         assertEquals(2, matches.size());
-        assertEquals(docId1, matches.get(0).getKey());
-        assertEquals(docId2, matches.get(1).getKey());
-        assertTrue(matches.get(0).getValue().compareTo(matches.get(1).getValue()) >= 0);
+        assertEquals(docId1, matches.get(0).getFirst());
+        assertEquals(docId2, matches.get(1).getFirst());
+        assertTrue(matches.get(0).getSecond().compareTo(matches.get(1).getSecond()) >= 0);
     }
 
     @Test
@@ -66,9 +64,9 @@ public class TextZoneTest {
 
         // ASSERT
         assertEquals(2, matches.size());
-        assertEquals(docId2, matches.get(0).getKey());
-        assertEquals(docId1, matches.get(1).getKey());
-        assertTrue(matches.get(0).getValue().compareTo(matches.get(1).getValue()) >= 0);
+        assertEquals(docId2, matches.get(0).getFirst());
+        assertEquals(docId1, matches.get(1).getFirst());
+        assertTrue(matches.get(0).getSecond().compareTo(matches.get(1).getSecond()) >= 0);
     }
 
     @Test

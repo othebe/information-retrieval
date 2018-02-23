@@ -8,7 +8,7 @@ import core.search.Search;
 import core.search.zones.textzone.StandardTextParser;
 import core.search.zones.textzone.TextZone;
 import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
-import javafx.util.Pair;
+import kotlin.Pair;
 
 import java.io.*;
 import java.net.URL;
@@ -87,7 +87,7 @@ public class WikipediaSearchExample {
 
             List<Pair<DocId, Double>> docIds = search.search(query, 3);
             for (Pair<DocId, Double> result : docIds) {
-                System.out.printf("[%s - %f]\n%s\n---------------------\n\n", result.getKey().getId(), result.getValue().doubleValue(), contentToDocId.get(result.getKey()));
+                System.out.printf("[%s - %f]\n%s\n---------------------\n\n", result.getFirst().getId(), result.getSecond().doubleValue(), contentToDocId.get(result.getFirst()));
             }
         }
     }

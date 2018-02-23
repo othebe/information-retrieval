@@ -5,7 +5,6 @@ import core.query.parser.StandardQueryParser
 import core.search.zones.textzone.StandardTextParser
 import core.search.zones.textzone.TextZone
 import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex
-import javafx.util.Pair
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -52,7 +51,7 @@ class SearchTest {
 
         // ASSERT
         assertEquals(1, results.size)
-        assertEquals(DocId(2), results.get(0).key)
+        assertEquals(DocId(2), results.get(0).first)
     }
 
     @Test
@@ -76,7 +75,7 @@ class SearchTest {
 
         // ASSERT
         assertEquals(1, results.size)
-        assertEquals(DocId(2), results.get(0).key)
+        assertEquals(DocId(2), results.get(0).first)
     }
 
     private inner class TimestampZone : Zone<Long>(ZONE_NAME_TIMESTAMP) {

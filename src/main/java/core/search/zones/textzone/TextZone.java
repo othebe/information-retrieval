@@ -7,7 +7,7 @@ import core.search.zones.textzone.positionalindex.Posting;
 import core.parser.Parser;
 import core.query.Query;
 import core.vectorizer.TfIdfVectorizer;
-import javafx.util.Pair;
+import kotlin.Pair;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -62,7 +62,7 @@ public class TextZone extends Zone<String> {
         Collections.sort(matches, new Comparator<Pair<DocId, Double>>() {
             @Override
             public int compare(Pair<DocId, Double> o1, Pair<DocId, Double> o2) {
-                return o2.getValue().compareTo(o1.getValue());
+                return o2.getSecond().compareTo(o1.getSecond());
             }
         });
 
