@@ -9,7 +9,7 @@ import core.parser.processor.string.Stemmer
 import core.parser.processor.string.StopWordFilter
 import core.parser.tokenizer.WhitespaceTokenizer
 
-class StandardTextParser : Parser<String, String>(
+open class StandardTextParser : Parser<String, String>(
         arrayOf<IProcessor<String>>(PunctuationProcessor(null), Lowercaser()),
         WhitespaceTokenizer(),
         arrayOf<IProcessor<String>>(DigitFilter(), StopWordFilter(), Stemmer())) {
