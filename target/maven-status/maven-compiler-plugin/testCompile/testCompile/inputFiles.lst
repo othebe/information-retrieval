@@ -1,0 +1,13 @@
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/node/LeafTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/parser/StandardQueryTokenizerTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/search/zones/textzone/StandardTextParserTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/node/OrTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/search/zones/textzone/TextZoneTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/search/zones/textzone/positionalindex/InMemoryPositionalIndexTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/vectorizer/TfIdfVectorizerTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/parser/processor/PunctuationProcessorTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/parser/tokenizer/WhitespaceTokenizerTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/QueryTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/node/PhraseTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/parser/StandardQueryParserTest.java
+/Users/othebe/Dev/information-retrieval/src/test/java/core/query/node/AndTest.java

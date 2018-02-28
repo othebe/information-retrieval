@@ -2,20 +2,20 @@ package core;
 
 import org.jetbrains.annotations.NotNull;
 
-public class DocId implements Comparable<DocId> {
-    private final int id;
+public class DocId<T extends Comparable<T>> implements Comparable<DocId> {
+    private final T id;
 
-    public DocId(int id) {
+    public DocId(T id) {
         this.id = id;
     }
 
-    public int getId() {
+    public T getId() {
         return id;
     }
 
     @Override
     public int compareTo(@NotNull DocId o) {
-        return Integer.compare(id, o.id);
+        return id.compareTo((T) o.id);
     }
 
     @Override
@@ -23,13 +23,13 @@ public class DocId implements Comparable<DocId> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DocId docId = (DocId) o;
+        DocId<?> docId = (DocId<?>) o;
 
-        return id == docId.id;
+        return id.equals(docId.id);
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return id.hashCode();
     }
 }

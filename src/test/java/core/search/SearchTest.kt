@@ -79,21 +79,21 @@ class SearchTest {
     }
 
     private inner class TimestampZone : Zone<Long>(ZONE_NAME_TIMESTAMP) {
-        private var index: Map<Long, DocId>
+        private var index: Map<Long, DocId<*>>
 
         init {
             this.index = HashMap()
         }
 
-        override fun index(data: Long, docId: DocId) {
+        override fun index(data: Long, docId: DocId<*>) {
             index = index.plus(data to docId)
         }
 
-        override fun match(query: Long): List<Pair<DocId, Double>> {
-            val matches = ArrayList<Pair<DocId, Double>>()
+        override fun match(query: Long): List<Pair<DocId<*>, Double>> {
+            val matches = ArrayList<Pair<DocId<*>, Double>>()
 
             if (index.containsKey(query)) {
-                val docId: DocId = index[query] ?: throw RuntimeException("Invalid test")
+                val docId: DocId<*> = index[query] ?: throw RuntimeException("Invalid test")
                 val result = Pair(docId, 1.0)
                 matches.add(result)
             }
