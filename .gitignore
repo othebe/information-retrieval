@@ -22,3 +22,6 @@
 hs_err_pid*
 text.txt
 out
+target
+workspace.xml
+.idea/artifacts
