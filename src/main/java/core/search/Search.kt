@@ -15,23 +15,25 @@ class Search(zones: Set<Zone<Any>>) {
         zonesByName = zones.associateBy { it -> it.name }
     }
 
-    fun search(query: Map<String, Any>, limit: Int): List<Pair<DocId<*>, Double>> {
-        return query.entries
-                .map {
-                    zonesByName[it.key]?.match(it.value)
-                }
-                .reduce { acc, matches ->
-                    if (matches == null || acc == null) {
-                        emptyList()
-                    } else {
-                        val constraints: Map<DocId<*>, Double> = acc.associate { it -> it.first to it.second }
-                        matches
-                                .filter { constraints.contains(it.first) }
-                                .map { it -> Pair(it.first, it.second * (constraints[it.first] ?: 0.0)) }
-                    }
-                }
-                .orEmpty()
-                .sortedByDescending { it -> it.second }
+    fun search(query: Map<String, Any>, limit: Int): List<Pair<DocId, Double>> {
+        val matchesByZone = query.mapValues { zonesByName[it.key]?.match(it.value).orEmpty() }
+
+        val isInZone = { docId: DocId, zone: List<Pair<DocId, Double>> ->
+            zone.map { it.first }.contains(docId)
+        }
+
+        val isInAllZones = { docId: DocId, zones: Map<String, List<Pair<DocId, Double>>> ->
+            zones.values.fold(true) { isFound, zoneResults ->
+                isFound && isInZone(docId, zoneResults)
+            }
+        }
+
+        return matchesByZone.values
+                .flatMap { it }
+                .filter { isInAllZones(it.first, matchesByZone) }
+                .groupBy({ it.first }, { it.second })
+                .map { Pair(it.key, it.value.fold(1.0) { acc, score -> acc * score }) }
+                .sortedByDescending { it.second }
                 .take(limit)
     }
 }
