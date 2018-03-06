@@ -47,7 +47,7 @@ class SearchTest {
         indexer.add(Record(DocId(2), recordData2))
 
         // ACT
-        val results = search.search(mapOf(ZONE_NAME_MESSAGE to "Jellyfish"), 5)
+        val results = search.search(mapOf(ZONE_NAME_MESSAGE to "Jellyfish  seabiscuit"), 5)
 
         // ASSERT
         assertEquals(1, results.size)

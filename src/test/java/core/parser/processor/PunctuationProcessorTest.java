@@ -35,6 +35,15 @@ public class PunctuationProcessorTest {
     }
 
     @Test
+    public void shouldReplaceMultipleWhitespaceWithSingleSpace() {
+        String in = "   abc   def";
+
+        String out = punctuationProcessor.process(in);
+
+        assertEquals(" abc def", out);
+    }
+
+    @Test
     public void shouldKeepAllowedCharacters() {
         String in = "Washing + Machine|Machines";
 

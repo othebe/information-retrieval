@@ -19,6 +19,7 @@ public class PunctuationProcessor implements IProcessor<String> {
     public String process(String in) {
         return in
                 .replaceAll(String.format("[%s]+", replaceWithSpaceRegex), " ")
-                .replaceAll(String.format("[%s]+", replaceWithBlankRegex), "");
+                .replaceAll(String.format("[%s]+", replaceWithBlankRegex), "")
+                .replaceAll("\\s{2,}", " ");
     }
 }
