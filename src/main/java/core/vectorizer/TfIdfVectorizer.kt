@@ -25,7 +25,7 @@ class TfIdfVectorizer {
         return vector.toUnitVector()
     }
 
-    fun vectorize(docId: DocId<*>, index: IPositionalIndex): Array<Double> {
+    fun vectorize(docId: DocId, index: IPositionalIndex): Array<Double> {
         val keys = index.keys
         val vector: Array<Double> = Array<Double>(keys.size, { 0.0 })
 

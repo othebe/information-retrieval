@@ -85,8 +85,8 @@ public class WikipediaSearchExample {
             Map<String, String> query = new HashMap<>();
             query.put("content", terms);
 
-            List<Pair<DocId<?>, Double>> docIds = search.search(query, 3);
-            for (Pair<DocId<?>, Double> result : docIds) {
+            List<Pair<DocId, Double>> docIds = search.search(query, 3);
+            for (Pair<DocId, Double> result : docIds) {
                 System.out.printf("[%s - %f]\n%s\n---------------------\n\n", result.getFirst().getId(), result.getSecond().doubleValue(), contentToDocId.get(result.getFirst()));
             }
         }
