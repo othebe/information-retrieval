@@ -1,9 +1,9 @@
-package core.search.zones.textzone;
+package core.zones.textzone;
 
 import core.DocId;
-import core.search.Zone;
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.Posting;
+import core.zones.Zone;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.Posting;
 import core.parser.Parser;
 import core.query.Query;
 import core.vectorizer.TfIdfVectorizer;
@@ -42,7 +42,7 @@ public class TextZone extends Zone<String> {
     }
 
     @Override
-    public List<Pair<DocId, Double>> match(String query) {
+    public List<Pair<DocId, Double>> matchQuery(String query) {
         List<Query> parsed = queryParser.parse(query);
         List<Posting> postingList = parsed.get(0).match(positionalIndex);
 
@@ -57,6 +57,33 @@ public class TextZone extends Zone<String> {
             Double[] docVector = vectorizer.vectorize(posting.getDocId(), positionalIndex);
             double score = getCosineAngle(queryVector, docVector);
             matches.add(new Pair<>(posting.getDocId(), score));
+        }
+
+        Collections.sort(matches, new Comparator<Pair<DocId, Double>>() {
+            @Override
+            public int compare(Pair<DocId, Double> o1, Pair<DocId, Double> o2) {
+                return o2.getSecond().compareTo(o1.getSecond());
+            }
+        });
+
+        return matches;
+    }
+
+    @Override
+    public List<Pair<DocId, Double>> matchData(String data) {
+        List<Pair<DocId, Double>> matches = new ArrayList<>();
+
+        List<String> parsedData = textParser.parse(data);
+        String[] parsedDataArray = new String[parsedData.size()];
+        parsedData.toArray(parsedDataArray);
+
+        Double[] dataVector = vectorizer.vectorize(parsedDataArray, positionalIndex);
+
+        for (DocId docId : positionalIndex.getDocIds()) {
+            Double[] documentVector = vectorizer.vectorize(docId, positionalIndex);
+            double score = getCosineAngle(dataVector, documentVector);
+
+            matches.add(new Pair<>(docId, score));
         }
 
         Collections.sort(matches, new Comparator<Pair<DocId, Double>>() {

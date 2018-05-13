@@ -1,11 +1,11 @@
 package core.query;
 
 import core.DocId;
-import core.search.zones.textzone.StandardTextParser;
-import core.search.zones.textzone.TextZone;
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
-import core.search.zones.textzone.positionalindex.Posting;
+import core.zones.textzone.StandardTextParser;
+import core.zones.textzone.TextZone;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
+import core.zones.textzone.positionalindex.Posting;
 import core.parser.Parser;
 import core.query.parser.StandardQueryParser;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package core.search.zones.textzone.positionalindex;
+package core.zones.textzone.positionalindex;
 
 import core.DocId;
 import org.jetbrains.annotations.NotNull;

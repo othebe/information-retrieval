@@ -1,4 +1,4 @@
-package core.search.zones.textzone.positionalindex;
+package core.zones.textzone.positionalindex;
 
 import core.DocId;
 
@@ -11,6 +11,11 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
     public InMemoryPositionalIndex() {
         this.index = new LinkedHashMap<>();
         this.docIdSet = new HashSet<>();
+    }
+
+    @Override
+    public Set<DocId> getDocIds() {
+        return docIdSet;
     }
 
     @Override

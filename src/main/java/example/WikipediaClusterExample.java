@@ -1,14 +1,13 @@
 package example;
 
+import clustering.DocumentCluster;
+import clustering.singlelinkhac.SingleLinkHAC;
 import core.DocId;
 import core.query.parser.StandardQueryParser;
-import search.Indexer;
 import core.Record;
-import search.Search;
 import core.zones.textzone.StandardTextParser;
 import core.zones.textzone.TextZone;
 import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
-import kotlin.Pair;
 
 import java.io.*;
 import java.net.URL;
@@ -18,7 +17,7 @@ import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class WikipediaSearchExample {
+public class WikipediaClusterExample {
     private static final String CORPUS_SOURCE = "https://corpus.byu.edu/wikitext-samples/text.zip";
     private static final String ZIPPED_FILE_NAME = "text.zip";
     private static final String UNZIPPED_FILE_NAME = "text.txt";
@@ -41,10 +40,10 @@ public class WikipediaSearchExample {
 
 
         /***********************
-         * BUILD INDEX
+         * BUILD CLUSTERS
          ***********************/
-        System.out.printf("Building index...\n\n");
-        Indexer indexer = new Indexer.Builder()
+        System.out.printf("Building clusters...\n\n");
+        SingleLinkHAC clusterer = new SingleLinkHAC.Builder()
                 .addZone(new TextZone("content", new InMemoryPositionalIndex(), new StandardQueryParser(), new StandardTextParser()))
                 .build();
         Scanner scanner = new Scanner(new File(UNZIPPED_FILE_NAME));
@@ -52,8 +51,10 @@ public class WikipediaSearchExample {
         scanner.nextLine();
         scanner.nextLine();
 
+        List<Record> records = new ArrayList<>();
         Map<DocId, String> contentToDocId = new HashMap<>();
 
+        int max = 300;
         DocId docId = null;
         while (scanner.hasNextLine()) {
             String content = scanner.nextLine();
@@ -63,13 +64,44 @@ public class WikipediaSearchExample {
                     recordData.put("content", content);
                     Record record = new Record(docId, recordData);
 
-                    indexer.add(record);
-
+                    records.add(record);
                     contentToDocId.put(docId, content);
                 }
 
                 docId = new DocId(Integer.parseInt(content.substring(2, content.indexOf(" "))));
             }
+            max--;
+            if (max == 0) break;
+        }
+
+        Set<DocumentCluster> clusters = clusterer.buildCluster(records, 0.6f);
+
+
+        /***************************
+         * DISPLAY CLUSTERS
+         ***************************/
+        PriorityQueue<DocumentCluster> clustersBySize = new PriorityQueue<>(clusters.size(), new Comparator<DocumentCluster>() {
+            @Override
+            public int compare(DocumentCluster o1, DocumentCluster o2) {
+                return Integer.compare(o2.getDocIds().size(), o1.getDocIds().size());
+            }
+        });
+        clustersBySize.addAll(clusters);
+
+        int limit = 10;
+        int count = 0;
+        while (!clustersBySize.isEmpty()) {
+            if (count >= limit) break;
+            count++;
+
+            DocumentCluster documentCluster = clustersBySize.poll();
+
+            System.out.printf("-----------------------------------\n");
+            System.out.printf("Cluster size: %d\n", documentCluster.getDocIds().size());
+            for (DocId clusterDocId : documentCluster.getDocIds()) {
+                System.out.printf("%d\n", clusterDocId.getId());
+            }
+            System.out.printf("-----------------------------------\n\n");
         }
 
 
@@ -77,18 +109,11 @@ public class WikipediaSearchExample {
          * QUERY REPL
          ***********************/
         Scanner stdin = new Scanner(System.in);
-        Search search = Search.Companion.fromIndexer(indexer);
         while (true) {
-            System.out.printf("? ");
-            String terms = stdin.nextLine();
+            System.out.printf("DocId? ");
+            int documentId = stdin.nextInt();
 
-            Map<String, String> query = new HashMap<>();
-            query.put("content", terms);
-
-            List<Pair<DocId, Double>> docIds = search.search(query, 3);
-            for (Pair<DocId, Double> result : docIds) {
-                System.out.printf("[%s - %f]\n%s\n---------------------\n\n", result.getFirst().getId(), result.getSecond().doubleValue(), contentToDocId.get(result.getFirst()));
-            }
+            System.out.printf("\n%s----------------------------------\n\n", contentToDocId.get(new DocId(documentId)));
         }
     }
 

@@ -1,4 +1,7 @@
-package core.search;
+package search;
+
+import core.Record;
+import core.zones.Zone;
 
 import java.util.*;
 

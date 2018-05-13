@@ -1,7 +1,7 @@
 package core.query.node
 
-import core.search.zones.textzone.positionalindex.IPositionalIndex
-import core.search.zones.textzone.positionalindex.Posting
+import core.zones.textzone.positionalindex.IPositionalIndex
+import core.zones.textzone.positionalindex.Posting
 import core.query.Query
 
 class Leaf(term: String) : Query(term) {

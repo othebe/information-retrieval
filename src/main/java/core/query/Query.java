@@ -1,7 +1,7 @@
 package core.query;
 
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.Posting;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.Posting;
 
 import java.util.List;
 

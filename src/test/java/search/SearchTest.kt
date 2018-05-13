@@ -1,10 +1,12 @@
-package core.search
+package search
 
 import core.DocId
+import core.Record
+import core.zones.Zone
 import core.query.parser.StandardQueryParser
-import core.search.zones.textzone.StandardTextParser
-import core.search.zones.textzone.TextZone
-import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex
+import core.zones.textzone.StandardTextParser
+import core.zones.textzone.TextZone
+import core.zones.textzone.positionalindex.InMemoryPositionalIndex
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -89,7 +91,7 @@ class SearchTest {
             index = index.plus(data to docId)
         }
 
-        override fun match(query: Long): List<Pair<DocId, Double>> {
+        override fun matchQuery(query: Long): List<Pair<DocId, Double>> {
             val matches = ArrayList<Pair<DocId, Double>>()
 
             if (index.containsKey(query)) {
@@ -99,6 +101,10 @@ class SearchTest {
             }
 
             return matches
+        }
+
+        override fun matchData(data: Long?): List<Pair<DocId, Double>> {
+            return emptyList()
         }
     }
 }

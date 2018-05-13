@@ -1,4 +1,4 @@
-package core.search.zones.textzone
+package core.zones.textzone
 
 import core.parser.Parser
 import core.parser.processor.*

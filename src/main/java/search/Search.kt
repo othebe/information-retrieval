@@ -1,6 +1,7 @@
-package core.search
+package search
 
 import core.DocId
+import core.zones.Zone
 
 class Search(zones: Set<Zone<Any>>) {
     private val zonesByName: Map<String, Zone<Any>>
@@ -16,7 +17,7 @@ class Search(zones: Set<Zone<Any>>) {
     }
 
     fun search(query: Map<String, Any>, limit: Int): List<Pair<DocId, Double>> {
-        val matchesByZone = query.mapValues { zonesByName[it.key]?.match(it.value).orEmpty() }
+        val matchesByZone = query.mapValues { zonesByName[it.key]?.matchQuery(it.value).orEmpty() }
 
         val isInZone = { docId: DocId, zone: List<Pair<DocId, Double>> ->
             zone.map { it.first }.contains(docId)

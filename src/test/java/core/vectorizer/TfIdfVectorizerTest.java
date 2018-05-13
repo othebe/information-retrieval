@@ -1,8 +1,8 @@
 package core.vectorizer;
 
 import core.DocId;
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

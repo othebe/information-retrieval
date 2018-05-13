@@ -1,6 +1,5 @@
-package core.search.zones.textzone;
+package core.zones.textzone;
 
-import core.search.zones.textzone.StandardTextParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

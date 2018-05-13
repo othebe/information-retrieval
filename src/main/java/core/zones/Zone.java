@@ -1,4 +1,4 @@
-package core.search;
+package core.zones;
 
 import core.DocId;
 import kotlin.Pair;
@@ -17,7 +17,8 @@ public abstract class Zone<T> {
     }
 
     public abstract void index(T data, DocId docId);
-    public abstract List<Pair<DocId, Double>> match(T query);
+    public abstract List<Pair<DocId, Double>> matchQuery(T query);
+    public abstract List<Pair<DocId, Double>> matchData(T data);
 
     @Override
     public boolean equals(Object o) {

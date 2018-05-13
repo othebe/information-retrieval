@@ -1,7 +1,7 @@
 package core.vectorizer
 
 import core.DocId
-import core.search.zones.textzone.positionalindex.IPositionalIndex
+import core.zones.textzone.positionalindex.IPositionalIndex
 
 /** TODO: Ignore TF since we will be doing a comparison */
 class TfIdfVectorizer {

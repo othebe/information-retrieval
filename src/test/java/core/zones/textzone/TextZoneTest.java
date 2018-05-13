@@ -1,8 +1,8 @@
-package core.search.zones.textzone;
+package core.zones.textzone;
 
 import core.DocId;
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
 import core.parser.Parser;
 import core.query.Query;
 import core.query.parser.StandardQueryParser;
@@ -40,7 +40,7 @@ public class TextZoneTest {
         zone.index("jellyfish" + TOKEN_AND + "porridge", new DocId(3));
 
         // ACT
-        List<Pair<DocId, Double>> matches = zone.match("eggs");
+        List<Pair<DocId, Double>> matches = zone.matchQuery("eggs");
 
         // ASSERT
         assertEquals(2, matches.size());
@@ -60,7 +60,7 @@ public class TextZoneTest {
         zone.index("jellyfish" + TOKEN_AND + "porridge", new DocId(3));
 
         // ACT
-        List<Pair<DocId, Double>> matches = zone.match("eggs" + TOKEN_AND + "ham");
+        List<Pair<DocId, Double>> matches = zone.matchQuery("eggs" + TOKEN_AND + "ham");
 
         // ASSERT
         assertEquals(2, matches.size());
@@ -79,7 +79,7 @@ public class TextZoneTest {
         zone.index("eggs" + TOKEN_PHRASE + "ham", docId2);
 
         // ACT
-        List<Pair<DocId, Double>> matches = zone.match("candy");
+        List<Pair<DocId, Double>> matches = zone.matchQuery("candy");
 
         // ASSERT
         assertEquals(0, matches.size());

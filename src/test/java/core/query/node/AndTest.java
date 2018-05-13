@@ -1,9 +1,9 @@
 package core.query.node;
 
 import core.DocId;
-import core.search.zones.textzone.positionalindex.IPositionalIndex;
-import core.search.zones.textzone.positionalindex.InMemoryPositionalIndex;
-import core.search.zones.textzone.positionalindex.Posting;
+import core.zones.textzone.positionalindex.IPositionalIndex;
+import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
+import core.zones.textzone.positionalindex.Posting;
 import core.query.Query;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
