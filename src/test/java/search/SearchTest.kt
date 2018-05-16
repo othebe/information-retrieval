@@ -1,6 +1,7 @@
 package search
 
 import core.DocId
+import core.Indexer
 import core.Record
 import core.zones.Zone
 import core.query.parser.StandardQueryParser
@@ -103,8 +104,8 @@ class SearchTest {
             return matches
         }
 
-        override fun matchData(data: Long?): List<Pair<DocId, Double>> {
-            return emptyList()
+        override fun getVector(docId: DocId?): Array<Double> {
+            return emptyArray()
         }
     }
 }

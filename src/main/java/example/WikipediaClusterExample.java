@@ -1,13 +1,14 @@
 package example;
 
 import clustering.DocumentCluster;
-import clustering.singlelinkhac.SingleLinkHAC;
+import clustering.SingleLinkHAC;
 import core.DocId;
 import core.query.parser.StandardQueryParser;
 import core.Record;
 import core.zones.textzone.StandardTextParser;
 import core.zones.textzone.TextZone;
 import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
+import core.Indexer;
 
 import java.io.*;
 import java.net.URL;
@@ -40,10 +41,10 @@ public class WikipediaClusterExample {
 
 
         /***********************
-         * BUILD CLUSTERS
+         * BUILD INDEX
          ***********************/
-        System.out.printf("Building clusters...\n\n");
-        SingleLinkHAC clusterer = new SingleLinkHAC.Builder()
+        System.out.printf("Building index...\n\n");
+        Indexer indexer = new Indexer.Builder()
                 .addZone(new TextZone("content", new InMemoryPositionalIndex(), new StandardQueryParser(), new StandardTextParser()))
                 .build();
         Scanner scanner = new Scanner(new File(UNZIPPED_FILE_NAME));
@@ -51,30 +52,39 @@ public class WikipediaClusterExample {
         scanner.nextLine();
         scanner.nextLine();
 
-        List<Record> records = new ArrayList<>();
         Map<DocId, String> contentToDocId = new HashMap<>();
 
-        int max = 300;
-        DocId docId = null;
+        int offset = 2000;
+        int max = 1000;
         while (scanner.hasNextLine()) {
             String content = scanner.nextLine();
             if (content.startsWith("@@")) {
-                if (docId != null) {
-                    Map<String, String> recordData = new HashMap<>();
-                    recordData.put("content", content);
-                    Record record = new Record(docId, recordData);
+                offset--;
+                if (offset > 0) continue;
 
-                    records.add(record);
-                    contentToDocId.put(docId, content);
-                }
+                DocId docId = new DocId(Integer.parseInt(content.substring(2, content.indexOf(" "))));
 
-                docId = new DocId(Integer.parseInt(content.substring(2, content.indexOf(" "))));
+                Map<String, String> recordData = new HashMap<>();
+                recordData.put("content", content);
+                Record record = new Record(docId, recordData);
+
+                indexer.add(record);
+
+                contentToDocId.put(docId, content);
+
+                max--;
+                if (max == 0) break;
             }
-            max--;
-            if (max == 0) break;
         }
 
-        Set<DocumentCluster> clusters = clusterer.buildCluster(records, 0.6f);
+
+        /***********************
+         * BUILD CLUSTERS
+         ***********************/
+        System.out.printf("Building clusters...\n\n");
+        SingleLinkHAC clusterer = SingleLinkHAC.fromIndexer(indexer);
+
+        Set<DocumentCluster> clusters = clusterer.buildCluster(0.6f);
 
 
         /***************************

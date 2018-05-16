@@ -1,6 +1,7 @@
 package search
 
 import core.DocId
+import core.Indexer
 import core.zones.Zone
 
 class Search(zones: Set<Zone<Any>>) {

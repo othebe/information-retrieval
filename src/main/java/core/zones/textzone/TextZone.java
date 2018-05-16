@@ -9,16 +9,14 @@ import core.query.Query;
 import core.vectorizer.TfIdfVectorizer;
 import kotlin.Pair;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class TextZone extends Zone<String> {
     private final IPositionalIndex positionalIndex;
     private final Parser<String, Query> queryParser;
     private final Parser<String, String> textParser;
     private final TfIdfVectorizer vectorizer;
+    private final Map<DocId, Double[]> documentVectors;
 
     public TextZone(String name,
                     IPositionalIndex positionalIndex,
@@ -29,6 +27,7 @@ public class TextZone extends Zone<String> {
         this.positionalIndex = positionalIndex;
         this.queryParser = queryParser;
         this.textParser = textParser;
+        this.documentVectors = new HashMap<>();
 
         this.vectorizer = new TfIdfVectorizer();
     }
@@ -39,6 +38,7 @@ public class TextZone extends Zone<String> {
         for (int i = 0; i < parsed.size(); i++) {
             positionalIndex.add(parsed.get(i), i, docId);
         }
+        documentVectors.clear();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class TextZone extends Zone<String> {
 
         List<Pair<DocId, Double>> matches = new ArrayList<>();
         for (Posting posting : postingList) {
-            Double[] docVector = vectorizer.vectorize(posting.getDocId(), positionalIndex);
+            Double[] docVector = getVector(posting.getDocId());
             double score = getCosineAngle(queryVector, docVector);
             matches.add(new Pair<>(posting.getDocId(), score));
         }
@@ -70,30 +70,11 @@ public class TextZone extends Zone<String> {
     }
 
     @Override
-    public List<Pair<DocId, Double>> matchData(String data) {
-        List<Pair<DocId, Double>> matches = new ArrayList<>();
-
-        List<String> parsedData = textParser.parse(data);
-        String[] parsedDataArray = new String[parsedData.size()];
-        parsedData.toArray(parsedDataArray);
-
-        Double[] dataVector = vectorizer.vectorize(parsedDataArray, positionalIndex);
-
-        for (DocId docId : positionalIndex.getDocIds()) {
-            Double[] documentVector = vectorizer.vectorize(docId, positionalIndex);
-            double score = getCosineAngle(dataVector, documentVector);
-
-            matches.add(new Pair<>(docId, score));
+    public Double[] getVector(DocId docId) {
+        if (!documentVectors.containsKey(docId)) {
+            documentVectors.put(docId, vectorizer.vectorize(docId, positionalIndex));
         }
-
-        Collections.sort(matches, new Comparator<Pair<DocId, Double>>() {
-            @Override
-            public int compare(Pair<DocId, Double> o1, Pair<DocId, Double> o2) {
-                return o2.getSecond().compareTo(o1.getSecond());
-            }
-        });
-
-        return matches;
+        return documentVectors.get(docId);
     }
 
     private double getCosineAngle(Double[] vecA, Double[] vecB) {

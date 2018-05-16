@@ -1,14 +1,15 @@
-package search;
+package core;
 
-import core.Record;
 import core.zones.Zone;
 
 import java.util.*;
 
 public class Indexer {
     private final Map<String, Zone> zonesByName;
+    private final List<DocId> docIds;
 
     private Indexer(Set<Zone> zones) {
+        this.docIds = new LinkedList<>();
         this.zonesByName = new HashMap<>();
         for (Zone zone : zones) {
             zonesByName.put(zone.getName(), zone);
@@ -22,6 +23,11 @@ public class Indexer {
                 zonesByName.get(zoneName).index(recordData.get(zoneName), record.getDocId());
             }
         }
+        docIds.add(record.getDocId());
+    }
+
+    public List<DocId> getDocIds() {
+        return docIds;
     }
 
     public Set<Zone> getZones() {

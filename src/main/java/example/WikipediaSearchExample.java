@@ -2,7 +2,7 @@ package example;
 
 import core.DocId;
 import core.query.parser.StandardQueryParser;
-import search.Indexer;
+import core.Indexer;
 import core.Record;
 import search.Search;
 import core.zones.textzone.StandardTextParser;
@@ -58,17 +58,14 @@ public class WikipediaSearchExample {
         while (scanner.hasNextLine()) {
             String content = scanner.nextLine();
             if (content.startsWith("@@")) {
-                if (docId != null) {
-                    Map<String, String> recordData = new HashMap<>();
-                    recordData.put("content", content);
-                    Record record = new Record(docId, recordData);
-
-                    indexer.add(record);
-
-                    contentToDocId.put(docId, content);
-                }
-
                 docId = new DocId(Integer.parseInt(content.substring(2, content.indexOf(" "))));
+                Map<String, String> recordData = new HashMap<>();
+                recordData.put("content", content);
+                Record record = new Record(docId, recordData);
+
+                indexer.add(record);
+
+                contentToDocId.put(docId, content);
             }
         }
 
