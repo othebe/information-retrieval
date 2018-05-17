@@ -104,8 +104,8 @@ class SearchTest {
             return matches
         }
 
-        override fun getVector(docId: DocId?): Array<Double> {
-            return emptyArray()
+        override fun getVector(docId: DocId?): DoubleArray {
+            return DoubleArray(0)
         }
     }
 }

@@ -11,12 +11,14 @@ import kotlin.Pair;
 
 import java.util.*;
 
+import static core.vectorizer.VectorUtils.getCosineAngle;
+
 public class TextZone extends Zone<String> {
     private final IPositionalIndex positionalIndex;
     private final Parser<String, Query> queryParser;
     private final Parser<String, String> textParser;
     private final TfIdfVectorizer vectorizer;
-    private final Map<DocId, Double[]> documentVectors;
+    private final Map<DocId, double[]> documentVectors;
 
     public TextZone(String name,
                     IPositionalIndex positionalIndex,
@@ -50,11 +52,11 @@ public class TextZone extends Zone<String> {
         String[] termsArray = new String[terms.size()];
         terms.toArray(termsArray);
 
-        Double[] queryVector = vectorizer.vectorize(termsArray, positionalIndex);
+        double[] queryVector = vectorizer.vectorize(termsArray, positionalIndex);
 
         List<Pair<DocId, Double>> matches = new ArrayList<>();
         for (Posting posting : postingList) {
-            Double[] docVector = getVector(posting.getDocId());
+            double[] docVector = getVector(posting.getDocId());
             double score = getCosineAngle(queryVector, docVector);
             matches.add(new Pair<>(posting.getDocId(), score));
         }
@@ -70,22 +72,10 @@ public class TextZone extends Zone<String> {
     }
 
     @Override
-    public Double[] getVector(DocId docId) {
+    public double[] getVector(DocId docId) {
         if (!documentVectors.containsKey(docId)) {
             documentVectors.put(docId, vectorizer.vectorize(docId, positionalIndex));
         }
         return documentVectors.get(docId);
-    }
-
-    private double getCosineAngle(Double[] vecA, Double[] vecB) {
-        int vecLength = vecA.length;
-
-        double dotProduct = 0;
-
-        for (int i = 0; i < vecLength; i++) {
-            dotProduct += vecA[i] * vecB[i];
-        }
-
-        return dotProduct;
     }
 }

@@ -1,7 +1,7 @@
 package core.vectorizer;
 
 public class VectorUtils {
-    public static final double getCosineAngle(Double[] vecA, Double[] vecB) {
+    public static final double getCosineAngle(double[] vecA, double[] vecB) {
         int vecLength = vecA.length;
 
         double dotProduct = 0;

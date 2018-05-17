@@ -5,11 +5,11 @@ import core.zones.textzone.positionalindex.IPositionalIndex
 
 /** TODO: Ignore TF since we will be doing a comparison */
 class TfIdfVectorizer {
-    fun vectorize(terms: Array<String>, index: IPositionalIndex): Array<Double> {
+    fun vectorize(terms: Array<String>, index: IPositionalIndex): DoubleArray {
         val termSet: Set<String> = terms.toSet()
 
         val keys = index.keys
-        val vector: Array<Double> = Array<Double>(keys.size, { 0.0 })
+        val vector = DoubleArray(keys.size, { 0.0 })
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -25,9 +25,9 @@ class TfIdfVectorizer {
         return vector.toUnitVector()
     }
 
-    fun vectorize(docId: DocId, index: IPositionalIndex): Array<Double> {
+    fun vectorize(docId: DocId, index: IPositionalIndex): DoubleArray {
         val keys = index.keys
-        val vector: Array<Double> = Array<Double>(keys.size, { 0.0 })
+        val vector = DoubleArray(keys.size, { 0.0 })
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -44,7 +44,7 @@ class TfIdfVectorizer {
         return vector.toUnitVector()
     }
 
-    private fun Array<Double>.toUnitVector(): Array<Double> {
+    private fun DoubleArray.toUnitVector(): DoubleArray {
         val magnitude: Double = Math.sqrt(fold(0.0) { acc, component -> acc + (component * component) })
         if (magnitude.equals(0.0)) return this
 
