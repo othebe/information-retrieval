@@ -54,14 +54,9 @@ public class WikipediaClusterExample {
 
         Map<DocId, String> contentToDocId = new HashMap<>();
 
-        int offset = 2000;
-        int max = 1000;
         while (scanner.hasNextLine()) {
             String content = scanner.nextLine();
             if (content.startsWith("@@")) {
-                offset--;
-                if (offset > 0) continue;
-
                 DocId docId = new DocId(Integer.parseInt(content.substring(2, content.indexOf(" "))));
 
                 Map<String, String> recordData = new HashMap<>();
@@ -71,9 +66,6 @@ public class WikipediaClusterExample {
                 indexer.add(record);
 
                 contentToDocId.put(docId, content);
-
-                max--;
-                if (max == 0) break;
             }
         }
 

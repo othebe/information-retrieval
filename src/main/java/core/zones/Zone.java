@@ -1,6 +1,7 @@
 package core.zones;
 
 import core.DocId;
+import core.vectorizer.SparseVector;
 import kotlin.Pair;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public abstract class Zone<T> {
 
     public abstract void index(T data, DocId docId);
     public abstract List<Pair<DocId, Double>> matchQuery(T query);
-    public abstract double[] getVector(DocId docId);
+    public abstract SparseVector<Double> getVector(DocId docId);
 
     @Override
     public boolean equals(Object o) {

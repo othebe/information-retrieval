@@ -36,14 +36,14 @@ public class TfIdfVectorizerTest {
         index.add(dictionary[3], 1, new DocId(3));
 
         // ACT
-        double[] vector = vectorizer.vectorize(terms, index);
+        SparseVector<Double> vector = vectorizer.vectorize(terms, index);
 
         // ASSERT
-        assertEquals(4, vector.length);
-        assertEquals(0.313469, vector[0], 0.000001);
-        assertEquals(0.849346, vector[1], 0.000001);
-        assertEquals(0.424673, vector[2], 0.000001);
-        assertEquals(0, vector[3]);
+        assertEquals(4, vector.getLength());
+        assertEquals(0.313469, vector.get(0), 0.000001);
+        assertEquals(0.849346, vector.get(1), 0.000001);
+        assertEquals(0.424673, vector.get(2), 0.000001);
+        assertEquals(0, vector.get(3), 0.000001);
     }
 
     @Test
@@ -63,13 +63,13 @@ public class TfIdfVectorizerTest {
         index.add(dictionary[3], 1, new DocId(3));
 
         // ACT
-        double[] vector = vectorizer.vectorize(new DocId(1), index);
+        SparseVector<Double> vector = vectorizer.vectorize(new DocId(1), index);
 
         // ASSERT
-        assertEquals(4, vector.length);
-        assertEquals(0.3462415, vector[0], 0.000001);
-        assertEquals(0, vector[1]);
-        assertEquals(0.9381453, vector[2], 0.000001);
-        assertEquals(0, vector[3]);
+        assertEquals(4, vector.getLength());
+        assertEquals(0.3462415, vector.get(0), 0.000001);
+        assertEquals(0.0, vector.get(1), 0.000001);
+        assertEquals(0.9381453, vector.get(2), 0.000001);
+        assertEquals(0.0, vector.get(3), 0.000001);
     }
 }

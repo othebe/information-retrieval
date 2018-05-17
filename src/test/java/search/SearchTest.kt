@@ -5,6 +5,7 @@ import core.Indexer
 import core.Record
 import core.zones.Zone
 import core.query.parser.StandardQueryParser
+import core.vectorizer.SparseVector
 import core.zones.textzone.StandardTextParser
 import core.zones.textzone.TextZone
 import core.zones.textzone.positionalindex.InMemoryPositionalIndex
@@ -104,8 +105,8 @@ class SearchTest {
             return matches
         }
 
-        override fun getVector(docId: DocId?): DoubleArray {
-            return DoubleArray(0)
+        override fun getVector(docId: DocId?): SparseVector<Double> {
+            return SparseVector(0, 0.0)
         }
     }
 }

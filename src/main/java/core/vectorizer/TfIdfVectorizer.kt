@@ -1,15 +1,16 @@
 package core.vectorizer
 
 import core.DocId
+import core.vectorizer.VectorUtils.getUnitVector
 import core.zones.textzone.positionalindex.IPositionalIndex
 
 /** TODO: Ignore TF since we will be doing a comparison */
 class TfIdfVectorizer {
-    fun vectorize(terms: Array<String>, index: IPositionalIndex): DoubleArray {
+    fun vectorize(terms: Array<String>, index: IPositionalIndex): SparseVector<Double> {
         val termSet: Set<String> = terms.toSet()
 
         val keys = index.keys
-        val vector = DoubleArray(keys.size, { 0.0 })
+        val vector = SparseVector<Double>(keys.size.toLong(), 0.0)
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -18,16 +19,16 @@ class TfIdfVectorizer {
                 val tf = postings.fold(0) { acc, posting -> acc + posting.positions.size }
                 val idf = Math.log(index.numDocuments * 1.0 / postings.size)
 
-                vector[i] = tf * idf
+                vector.put(i.toLong(), tf * idf)
             }
         }
 
-        return vector.toUnitVector()
+        return getUnitVector(vector)
     }
 
-    fun vectorize(docId: DocId, index: IPositionalIndex): DoubleArray {
+    fun vectorize(docId: DocId, index: IPositionalIndex): SparseVector<Double> {
         val keys = index.keys
-        val vector = DoubleArray(keys.size, { 0.0 })
+        val vector = SparseVector<Double>(keys.size.toLong(), 0.0)
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -37,11 +38,11 @@ class TfIdfVectorizer {
                 val tf = this?.positions?.size ?: 0
                 val idf = Math.log(index.numDocuments * 1.0 / postings.size)
 
-                vector[i] = tf * idf
+                vector.put(i.toLong(), tf * idf)
             }
         }
 
-        return vector.toUnitVector()
+        return getUnitVector(vector)
     }
 
     private fun DoubleArray.toUnitVector(): DoubleArray {

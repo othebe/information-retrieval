@@ -1,6 +1,7 @@
 package core.zones.textzone;
 
 import core.DocId;
+import core.vectorizer.SparseVector;
 import core.zones.Zone;
 import core.zones.textzone.positionalindex.IPositionalIndex;
 import core.zones.textzone.positionalindex.Posting;
@@ -18,7 +19,7 @@ public class TextZone extends Zone<String> {
     private final Parser<String, Query> queryParser;
     private final Parser<String, String> textParser;
     private final TfIdfVectorizer vectorizer;
-    private final Map<DocId, double[]> documentVectors;
+    private final Map<DocId, SparseVector<Double>> documentVectors;
 
     public TextZone(String name,
                     IPositionalIndex positionalIndex,
@@ -52,11 +53,11 @@ public class TextZone extends Zone<String> {
         String[] termsArray = new String[terms.size()];
         terms.toArray(termsArray);
 
-        double[] queryVector = vectorizer.vectorize(termsArray, positionalIndex);
+        SparseVector<Double> queryVector = vectorizer.vectorize(termsArray, positionalIndex);
 
         List<Pair<DocId, Double>> matches = new ArrayList<>();
         for (Posting posting : postingList) {
-            double[] docVector = getVector(posting.getDocId());
+            SparseVector<Double> docVector = getVector(posting.getDocId());
             double score = getCosineAngle(queryVector, docVector);
             matches.add(new Pair<>(posting.getDocId(), score));
         }
@@ -72,7 +73,7 @@ public class TextZone extends Zone<String> {
     }
 
     @Override
-    public double[] getVector(DocId docId) {
+    public SparseVector<Double> getVector(DocId docId) {
         if (!documentVectors.containsKey(docId)) {
             documentVectors.put(docId, vectorizer.vectorize(docId, positionalIndex));
         }

@@ -55,6 +55,10 @@ public class SingleLinkHAC {
 
                     similarityTable[i][j] = similarity;
                     similarityTable[j][i] = similarity;
+
+                    if (i == 0) {
+                        System.out.printf("Vectorizing: %d/%d\n", j, numDocuments);
+                    }
                 }
             }
         }
