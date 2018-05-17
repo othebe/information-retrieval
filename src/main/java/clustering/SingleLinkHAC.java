@@ -24,7 +24,7 @@ public class SingleLinkHAC {
         int numDocuments = indexer.getDocIds().size();
 
         // Initialize similarity table.
-        Double[][] similarityTable = new Double[numDocuments][numDocuments];
+        double[][] similarityTable = new double[numDocuments][numDocuments];
         for (int i = 0; i < similarityTable.length; i++) {
             for (int j = 0; j < similarityTable.length; j++) {
                 similarityTable[i][j] = 0.0;
@@ -50,6 +50,9 @@ public class SingleLinkHAC {
                     double similarity = (i == j) ? 1.0 : getCosineAngle(
                             zone.getVector(indexer.getDocIds().get(i)),
                             zone.getVector(indexer.getDocIds().get(j)));
+
+                    if (similarity < minSimilarity) similarity = 0;
+
                     similarityTable[i][j] = similarity;
                     similarityTable[j][i] = similarity;
                 }
@@ -120,7 +123,7 @@ public class SingleLinkHAC {
         return new HashSet<>(documentClusterMap.values());
     }
 
-    private static Pair<Integer, Integer> findMaxSimilarityPair(Double[][] similarityTable, Set<Integer> ignoredIndices, Set<Integer> mergedIndices) {
+    private static Pair<Integer, Integer> findMaxSimilarityPair(double[][] similarityTable, Set<Integer> ignoredIndices, Set<Integer> mergedIndices) {
         int maxI = -1;
         int maxJ = -1;
         double maxSimilarity = 0;
