@@ -36,4 +36,8 @@ public class SparseVector<T> {
     public T get(long ndx) {
         return valuesByNdx.containsKey(ndx) ? valuesByNdx.get(ndx) : defaultValue;
     }
+
+    public boolean has(long ndx) {
+        return valuesByNdx.containsKey(ndx);
+    }
 }

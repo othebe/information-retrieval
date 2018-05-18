@@ -7,7 +7,9 @@ public class VectorUtils {
         double dotProduct = 0;
 
         for (long i = 0; i < vecLength; i++) {
-            dotProduct += vecA.get(i) * vecB.get(i);
+            if (vecA.has(i) && vecB.has(i)) {
+                dotProduct += vecA.get(i) * vecB.get(i);
+            }
         }
 
         return dotProduct;
@@ -24,7 +26,8 @@ public class VectorUtils {
 
         SparseVector<Double> unitVector = new SparseVector<>(sparseVector.getLength(), sparseVector.getDefaultValue());
         for (long i = 0; i < sparseVector.getLength(); i++) {
-            unitVector.put(i, sparseVector.get(i) / magnitude);
+            double component = sparseVector.has(i) ? sparseVector.get(i) / magnitude : 0;
+            unitVector.put(i, component);
         }
 
         return unitVector;
