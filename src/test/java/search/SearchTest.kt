@@ -106,7 +106,7 @@ class SearchTest {
         }
 
         override fun getVector(docId: DocId?): SparseVector<Double> {
-            return SparseVector(0, 0.0)
+            return SparseVector()
         }
     }
 }

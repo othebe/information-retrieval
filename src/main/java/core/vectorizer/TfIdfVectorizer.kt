@@ -10,7 +10,7 @@ class TfIdfVectorizer {
         val termSet: Set<String> = terms.toSet()
 
         val keys = index.keys
-        val vector = SparseVector<Double>(keys.size.toLong(), 0.0)
+        val vector = SparseVector<Double>()
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -28,7 +28,7 @@ class TfIdfVectorizer {
 
     fun vectorize(docId: DocId, index: IPositionalIndex): SparseVector<Double> {
         val keys = index.keys
-        val vector = SparseVector<Double>(keys.size.toLong(), 0.0)
+        val vector = SparseVector<Double>()
 
         for (i in keys.indices) {
             val key = keys[i]
@@ -38,7 +38,9 @@ class TfIdfVectorizer {
                 val tf = this?.positions?.size ?: 0
                 val idf = Math.log(index.numDocuments * 1.0 / postings.size)
 
-                vector.put(i.toLong(), tf * idf)
+                if (tf != 0) {
+                    vector.put(i.toLong(), tf * idf)
+                }
             }
         }
 

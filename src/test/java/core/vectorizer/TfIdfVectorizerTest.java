@@ -6,6 +6,8 @@ import core.zones.textzone.positionalindex.InMemoryPositionalIndex;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TfIdfVectorizerTest {
@@ -39,11 +41,19 @@ public class TfIdfVectorizerTest {
         SparseVector<Double> vector = vectorizer.vectorize(terms, index);
 
         // ASSERT
-        assertEquals(4, vector.getLength());
-        assertEquals(0.313469, vector.get(0), 0.000001);
-        assertEquals(0.849346, vector.get(1), 0.000001);
-        assertEquals(0.424673, vector.get(2), 0.000001);
-        assertEquals(0, vector.get(3), 0.000001);
+        Iterator<SparseVector<Double>.Data<Double>> it = vector.getIterator();
+
+        SparseVector<Double>.Data<Double> data0 = it.next();
+        assertEquals(0, data0.getNdx());
+        assertEquals(0.313469, data0.getValue(), 0.000001);
+
+        SparseVector<Double>.Data<Double> data1 = it.next();
+        assertEquals(1, data1.getNdx());
+        assertEquals(0.849346, data1.getValue(), 0.000001);
+
+        SparseVector<Double>.Data<Double> data2 = it.next();
+        assertEquals(2, data2.getNdx());
+        assertEquals(0.424673, data2.getValue(), 0.000001);
     }
 
     @Test
@@ -66,10 +76,14 @@ public class TfIdfVectorizerTest {
         SparseVector<Double> vector = vectorizer.vectorize(new DocId(1), index);
 
         // ASSERT
-        assertEquals(4, vector.getLength());
-        assertEquals(0.3462415, vector.get(0), 0.000001);
-        assertEquals(0.0, vector.get(1), 0.000001);
-        assertEquals(0.9381453, vector.get(2), 0.000001);
-        assertEquals(0.0, vector.get(3), 0.000001);
+        Iterator<SparseVector<Double>.Data<Double>> it = vector.getIterator();
+
+        SparseVector<Double>.Data<Double> data0 = it.next();
+        assertEquals(0, data0.getNdx());
+        assertEquals(0.3462415, data0.getValue(), 0.000001);
+
+        SparseVector<Double>.Data<Double> data2 = it.next();
+        assertEquals(2, data2.getNdx());
+        assertEquals(0.9381453, data2.getValue(), 0.000001);
     }
 }
