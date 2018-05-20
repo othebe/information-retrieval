@@ -9,7 +9,7 @@ public class Indexer {
     private final List<DocId> docIds;
 
     private Indexer(Set<Zone> zones) {
-        this.docIds = new LinkedList<>();
+        this.docIds = new ArrayList<>();
         this.zonesByName = new HashMap<>();
         for (Zone zone : zones) {
             zonesByName.put(zone.getName(), zone);

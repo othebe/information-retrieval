@@ -8,6 +8,8 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
     private final Map<String, PriorityQueue<Posting>> index;
     private final Set<DocId> docIdSet;
 
+    private String[] cachedKeys;
+
     public InMemoryPositionalIndex() {
         this.index = new LinkedHashMap<>();
         this.docIdSet = new HashSet<>();
@@ -33,7 +35,6 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
         while (iterator.hasNext()) {
             Posting posting = iterator.next();
             if (posting.getDocId().equals(docId)) {
-
                 if (Arrays.binarySearch(posting.getPositions(), position) < 0) {
                     posting.addPosition(position);
                 }
@@ -48,6 +49,8 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
             positions.add(position);
             postings.add(new Posting(docId, positions));
         }
+
+        resetCache();
     }
 
     @Override
@@ -58,7 +61,6 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
         }
 
         Posting[] postingArr = new Posting[postings.size()];
-
         int ndx = 0;
         while (!postings.isEmpty()) {
             postingArr[ndx] = postings.poll();
@@ -79,16 +81,25 @@ public class InMemoryPositionalIndex implements IPositionalIndex {
 
     @Override
     public String[] getKeys() {
-        String[] keys = new String[index.size()];
-        Set<String> keySet = index.keySet();
+        if (cachedKeys != null) {
+            return cachedKeys;
+        } else {
+            String[] keys = new String[index.size()];
+            Set<String> keySet = index.keySet();
 
-        int ndx = 0;
-        Iterator<String> iterator = keySet.iterator();
-        while (iterator.hasNext()) {
-            keys[ndx] = iterator.next();
-            ndx++;
+            int ndx = 0;
+            Iterator<String> iterator = keySet.iterator();
+            while (iterator.hasNext()) {
+                keys[ndx] = iterator.next();
+                ndx++;
+            }
+            cachedKeys = keys;
         }
 
-        return keys;
+        return cachedKeys;
+    }
+
+    private void resetCache() {
+        cachedKeys = null;
     }
 }
