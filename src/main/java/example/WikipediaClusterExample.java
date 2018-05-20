@@ -76,7 +76,7 @@ public class WikipediaClusterExample {
         System.out.printf("Building clusters...\n\n");
         SingleLinkHAC clusterer = SingleLinkHAC.fromIndexer(indexer);
 
-        Set<DocumentCluster> clusters = clusterer.buildCluster(0.6f);
+        Set<DocumentCluster> clusters = clusterer.buildCluster(0.3f, (int) Math.round(Math.sqrt(indexer.getDocIds().size())));
 
 
         /***************************

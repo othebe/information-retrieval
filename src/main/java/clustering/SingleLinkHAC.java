@@ -2,7 +2,6 @@ package clustering;
 
 import core.DocId;
 import core.zones.Zone;
-import kotlin.Pair;
 import core.Indexer;
 
 import java.util.*;
@@ -21,7 +20,18 @@ public class SingleLinkHAC {
     }
 
     public Set<DocumentCluster> buildCluster(double minSimilarity) {
-        int numDocuments = indexer.getDocIds().size();
+        return buildCluster(minSimilarity, -1);
+    }
+
+    public Set<DocumentCluster> buildCluster(double minSimilarity, int iterations) {
+        final int numDocuments = indexer.getDocIds().size();
+
+        PriorityQueue<PairSimilarity> similarityQueue = new PriorityQueue<>(numDocuments * numDocuments, new Comparator<PairSimilarity>() {
+            @Override
+            public int compare(PairSimilarity o1, PairSimilarity o2) {
+                return Double.compare(o2.score, o1.score);
+            }
+        });
 
         // Initialize similarity table.
         double[][] similarityTable = new double[numDocuments][numDocuments];
@@ -56,6 +66,8 @@ public class SingleLinkHAC {
                     similarityTable[i][j] = similarity;
                     similarityTable[j][i] = similarity;
 
+                    similarityQueue.add(new PairSimilarity(i, j, similarity));
+
                     if (i == 0) {
                         System.out.printf("Vectorizing: %d/%d\n", j, numDocuments);
                     }
@@ -70,30 +82,33 @@ public class SingleLinkHAC {
             iteration++;
 
             Set<Integer> activeClusters = new HashSet<>();
-            List<Pair<Integer, Integer>> activeMerges = new ArrayList<>();
-            Pair<Integer, Integer> pair;
+            List<PairSimilarity> activeMerges = new ArrayList<>();
 
             // Find merge-able clusters.
             double maxSimilarity = -1;
-            while ((pair = findMaxSimilarityPair(similarityTable, activeClusters, mergedClusters)) != null) {
-                int ndx1 = pair.getFirst();
-                int ndx2 = pair.getSecond();
 
-                if (similarityTable[ndx1][ndx2] > minSimilarity) {
-                    activeClusters.add(ndx1);
-                    activeClusters.add(ndx2);
+            while (!similarityQueue.isEmpty()) {
+                PairSimilarity pairSimilarity = similarityQueue.poll();
 
-                    activeMerges.add(pair);
-                    if (maxSimilarity < 0) maxSimilarity = similarityTable[ndx1][ndx2];
-                } else {
-                    break;
+                if (activeClusters.contains(pairSimilarity.i) || activeClusters.contains(pairSimilarity.j)) continue;
+                if (mergedClusters.contains(pairSimilarity.i) || mergedClusters.contains(pairSimilarity.j)) continue;
+
+                if (pairSimilarity.i == pairSimilarity.j) continue;
+
+                if (pairSimilarity.score > minSimilarity) {
+                    activeClusters.add(pairSimilarity.i);
+                    activeClusters.add(pairSimilarity.j);
+
+                    activeMerges.add(pairSimilarity);
+
+                    if (maxSimilarity < 0) maxSimilarity = pairSimilarity.score;
                 }
             }
 
             // Update similarity table.
-            for (Pair<Integer, Integer> mergePair : activeMerges) {
-                int i = mergePair.getFirst();
-                int j = mergePair.getSecond();
+            for (PairSimilarity mergePair : activeMerges) {
+                int i = mergePair.i;
+                int j = mergePair.j;
 
                 for (int ndx = 0; ndx < numDocuments; ndx++) {
                     double updatedSimilarity = Math.max(similarityTable[i][ndx], similarityTable[j][ndx]);
@@ -101,13 +116,15 @@ public class SingleLinkHAC {
                     similarityTable[ndx][i] = updatedSimilarity;
                     similarityTable[j][ndx] = updatedSimilarity;
                     similarityTable[ndx][j] = updatedSimilarity;
+
+                    similarityQueue.add(new PairSimilarity(j, ndx, updatedSimilarity));
                 }
             }
 
             // Merge active clusters.
-            for (Pair<Integer, Integer> mergePair : activeMerges) {
-                int sourceNdx = mergePair.getFirst();
-                int targetNdx = mergePair.getSecond();
+            for (PairSimilarity mergePair : activeMerges) {
+                int sourceNdx = mergePair.i;
+                int targetNdx = mergePair.j;
 
                 DocumentCluster sourceCluster = documentClusterMap.get(sourceNdx);
                 DocumentCluster targetCluster = documentClusterMap.get(targetNdx);
@@ -119,7 +136,7 @@ public class SingleLinkHAC {
                 mergedClusters.add(sourceNdx);
             }
 
-            isClustering = !activeClusters.isEmpty();
+            isClustering = iterations != -1 && iteration < iterations && !activeClusters.isEmpty();
 
             System.out.printf("Iter %d: Max score: %f\n", iteration, maxSimilarity);
         }
@@ -127,33 +144,15 @@ public class SingleLinkHAC {
         return new HashSet<>(documentClusterMap.values());
     }
 
-    private static Pair<Integer, Integer> findMaxSimilarityPair(double[][] similarityTable, Set<Integer> ignoredIndices, Set<Integer> mergedIndices) {
-        int maxI = -1;
-        int maxJ = -1;
-        double maxSimilarity = 0;
+    private static class PairSimilarity {
+        public int i;
+        public int j;
+        public double score;
 
-        for (int i = 0; i < similarityTable.length; i++) {
-            for (int j = i + 1; j < similarityTable.length; j++) {
-                if (ignoredIndices.contains(i) || ignoredIndices.contains(j)) {
-                    continue;
-                }
-
-                if (mergedIndices.contains(i) || mergedIndices.contains(j)) {
-                    continue;
-                }
-
-                if (similarityTable[i][j] > maxSimilarity) {
-                    maxSimilarity = similarityTable[i][j];
-                    maxI = i;
-                    maxJ = j;
-                }
-            }
-        }
-
-        if (maxI >= 0 && maxJ >= 0) {
-            return new Pair<>(maxI, maxJ);
-        } else {
-            return null;
+        private PairSimilarity(int i, int j, double score) {
+            this.i = i;
+            this.j = j;
+            this.score = score;
         }
     }
 }
