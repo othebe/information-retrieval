@@ -14,15 +14,21 @@ public class VectorUtils {
         SparseVector<Double>.Data<Double> vecA_data = vecA_it.next();
         SparseVector<Double>.Data<Double> vecB_data = vecB_it.next();
 
-        while (vecA_it.hasNext() && vecB_it.hasNext()) {
+        while (true) {
             if (vecA_data.getNdx() == vecB_data.getNdx()) {
                 dotProduct += vecA_data.getValue() * vecB_data.getValue();
+
+                if (vecA_it.hasNext() && vecB_it.hasNext()) {
+                    vecA_data = vecA_it.next();
+                    vecB_data = vecB_it.next();
+                } else break;
+
+            } else if (vecA_data.getNdx() < vecB_data.getNdx() && vecA_it.hasNext()) {
                 vecA_data = vecA_it.next();
+            } else if (vecA_data.getNdx() > vecB_data.getNdx() && vecB_it.hasNext()) {
                 vecB_data = vecB_it.next();
-            } else if (vecA_data.getNdx() < vecB_data.getNdx()) {
-                vecA_data = vecA_it.next();
             } else {
-                vecB_data = vecB_it.next();
+                break;
             }
         }
 
